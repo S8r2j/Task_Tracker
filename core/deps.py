@@ -12,7 +12,7 @@ try:
 except ValueError: # Already removed
     pass
 
-from ..database import database_connect,model
+from database import database_connect,model
 from .security import verify_access_token,auth_scheme
 
 

@@ -14,6 +14,7 @@ class Users(base):
         orm_mode:True
 
 class Login(base):
+    __tablename__="login"
     id=Column(Integer,autoincrement=True,primary_key=True)
     user_name=Column(String,ForeignKey("userdetails"))
     password=Column(String,nullable=False)
@@ -23,6 +24,7 @@ class Login(base):
 
 
 class Tasks(base):
+    __tablename__="tasks"
     task_id=Column(Integer,autoincrement=True,primary_key=True,unique=True)
     user_name=Column(String,ForeignKey("userdetails"))
     tasks_to_do=Column(String,nullable=True)

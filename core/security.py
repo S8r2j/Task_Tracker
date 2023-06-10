@@ -2,7 +2,7 @@ from fastapi.security.oauth2 import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from datetime import timedelta, datetime
 import json
-from ..database import schemas
+from database import schemas
 from .config import settings
 from passlib.context import CryptContext
 

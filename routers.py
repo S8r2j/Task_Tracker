@@ -3,6 +3,7 @@ from database import model,database_connect,schemas
 from core import deps,security
 from sqlalchemy.orm import Session
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
+from typing import List
 
 
 router=APIRouter()
@@ -67,3 +68,12 @@ async def update_status(task_id:int,updatestatus:str,user:model.Users=Depends(de
     task.status=updatestatus
     db.commit()
     return "Status Updated"
+
+
+@router.get("/get/tasks/",dependencies=[Depends(deps.get_current_user)],response_model=List[schemas.TaskOuput])
+async def get_tasks(user:model.Users=Depends(deps.get_current_user),db:Session=Depends(deps.get_database)):
+    user = db.query(model.Users).filter(model.Users.user_name == user.user_name).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized access")
+    tasks=db.query(model.Tasks).filter(model.Tasks.user_id==user.user_id).all()
+    return tasks

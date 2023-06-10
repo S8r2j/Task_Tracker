@@ -45,8 +45,25 @@ async def user_login(credentials:OAuth2PasswordRequestForm=Depends(),db:Session=
     return {"access_token": access_token, "token_type": "bearer", "user_name": credentials.username}
 
 
-@router.patch("/add/tasks/",dependencies=[Depends(deps.get_current_user)])
+@router.post("/add/tasks/",dependencies=[Depends(deps.get_current_user)],response_model=schemas.TaskOuput)
 def add_tasks(tasks:schemas.CreateTasks,user:model.Users=Depends(deps.get_current_user),db:Session=Depends(deps.get_database)):
     user=db.query(model.Users).filter(model.Users.user_name==user.user_name).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized access")
+    task=model.Tasks(user_id=user.user_id,task=tasks.task,status=tasks.status)
+    db.add(task)
+    db.commit()
+    db.refresh(task)
+    return task
+
+@router.patch("/update/task_id={task_id}/status", dependencies=[Depends(deps.get_current_user)])
+async def update_status(task_id:int,updatestatus:str,user:model.Users=Depends(deps.get_current_user),db:Session=Depends(deps.get_database)):
+    user = db.query(model.Users).filter(model.Users.user_name == user.user_name).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized access")
+    task=db.query(model.Tasks).filter(model.Tasks.task_id==task_id).filter(model.Tasks.user_id==user.user_id).first()
+    if not task:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No such link found")
+    task.status=updatestatus
+    db.commit()
+    return "Status Updated"

@@ -26,18 +26,19 @@ class Login(SQLModel):
 
 
 class CreateTasks(SQLModel):
-    tasks_to_do: str
-    tasks_in_progress: str
-    tasks_completed: str
+    task:str
+    status:str
 
 
 class Tasks(CreateTasks):
-    user_name:str
+    user_id:str
 
     class config:
         orm_mode:True
 
 
+class TaskOuput(CreateTasks):
+    task_id:int
 class Token(SQLModel):
     access_token:str
     token_type:str

@@ -8,10 +8,7 @@ from passlib.context import CryptContext
 
 password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-
-
-
-auth_scheme = OAuth2PasswordBearer(tokenUrl="login")
+auth_scheme = OAuth2PasswordBearer(tokenUrl="/user/login/")
 # SECRET_KEY and ALGORITHM is used for creating the access token
 # Add the secret key to your env file in the format : "SECRET_KEY":"your_secret_key"
 SECRET_KEY = settings.SECRET_KEY
@@ -19,9 +16,6 @@ ALGORITHM =settings.ALGORITHM
 
 # TOKEN_EXPIRY is the expiry time of the access token that is created
 TOKEN_EXPIRY_MINUTES = settings.TOKEN_EXPIRY_LIMIT
-
-
-
 
 def create_access_token(data: dict):
     # copying the original data to another variable to create access token from it

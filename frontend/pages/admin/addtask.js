@@ -1,26 +1,50 @@
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import { useSession } from 'next-auth/react';
-  
+import axios from 'axios';
+
 function addtask() { 
     const [task, setTask] = useState();
+    const [refetch, setRefetch] =useState(false);
+    const [todo, settodo] = useState([]);
+    const [data, setData] = useState([]);
     const {data:session}= useSession();
     const token = session?.user.access_token;
- 
-   
+    const url ="http://127.0.0.1:8000/get/tasks/";
+
+    useEffect(() => {
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        }
+      };
+      axios
+        .get(url, config)
+        .then((response) => {
+          setData(response.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+  
+  },[refetch,token]);
+  
+    
     const handleSubmit = async (e) => {
       e.preventDefault();
-      setName('');
-      setUrl('');
-  
+      setTask('')
       const axios = require('axios');
-  
       let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: `http://127.0.0.1:8000/links/?title=${name}&url=${url}`,
+        url: 'http://127.0.0.1:8000/add/tasks/',
         headers: {
           'Accept': 'application/json',
           'Authorization': `Bearer ${token}`
+        }, 
+        data:{
+          task:task,
+          status:"inProgress",
         }
       };
   
@@ -31,7 +55,7 @@ function addtask() {
       .catch((error) => {
         console.log(error);
       });
-      setShowbtn(!showbtn)
+      setRefetch(!refetch);
     }
   
   return (
@@ -68,6 +92,15 @@ function addtask() {
         </div>  
        </div>
       </form> 
+      <div className='m-2 bg-gray-50 shadow-sm w-full md:w-1/2 lg:w-1/2 '>
+      <ul className='flex flex-col justify-center mt-4 list-disc m-2 pl-2'>
+              {data.map((item , index) => (
+                <li key={index}>
+                  <p>{item.task}</p>
+                </li>
+              ))}
+            </ul>
+      </div>
      </div>
     </div>
   )

@@ -35,10 +35,11 @@ function Index() {
   const handleDragOver = (e) => {
     e.preventDefault();
   };
-
+ 
   const handleDrop = (e, status) => {
     e.preventDefault();
     const droppedTask = JSON.parse(e.dataTransfer.getData('text/plain'));
+    updateTaskStatus(droppedTask.task_id, status);
     const updatedData = data.map((task) => {
       if (task.task_id === droppedTask.task_id) {
         return { ...task, status: status };
@@ -46,6 +47,30 @@ function Index() {
       return task;
     });
     setData(updatedData);
+  };
+  const updateTaskStatus = async (taskId, status) => {
+    console.log(taskId)
+    console.log(token)
+    const axios = require('axios');
+
+    let config = {
+      method: 'patch',
+      maxBodyLength: Infinity,
+      url: `http://127.0.0.1:8000/update/task_id=${taskId}/status?updatestatus=${status}`,
+      headers: { 
+        'Accept': 'application/json', 
+        'Authorization': `Bearer ${token}`
+      }
+    };
+    
+    axios.request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    
   };
 
   const getTasksByStatus = (status) => {

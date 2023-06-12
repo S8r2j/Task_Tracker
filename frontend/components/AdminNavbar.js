@@ -82,11 +82,11 @@ function AdminNavbar() {
                 
                 </li>
                 <li className="hover:text-blue-600">
-                  <Link href="/">
+                  <Link href="/admin">
                   <p className=''>@{username}</p>
                   </Link>
                 </li>
-                <li className="">
+                <li className="/admin">
                 <div className=''><UserPhoto/></div>
                 
                 </li>

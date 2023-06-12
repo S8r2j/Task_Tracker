@@ -1,5 +1,6 @@
 import React,{useEffect, useState} from 'react'
 import { useSession } from 'next-auth/react';
+import AdminNavbar from '@/components/AdminNavbar';
 import axios from 'axios';
 
 function addtask() { 
@@ -44,7 +45,7 @@ function addtask() {
         }, 
         data:{
           task:task,
-          status:"inProgress",
+          status:"todo",
         }
       };
   
@@ -60,6 +61,7 @@ function addtask() {
   
   return (
     <div className='bg-gray-100 h-screen'> 
+    <div><AdminNavbar/></div>
      <div className='p-2'>
      <form onSubmit={handleSubmit}>
        <div>
